@@ -3,4 +3,4 @@ project(AdventOfCode)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(day1 day1.cpp)
+add_executable(Day1 Day1/SafeCodeFinder.cpp)

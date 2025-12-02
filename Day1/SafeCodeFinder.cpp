@@ -5,7 +5,7 @@
 
 int main()
 {
-    std::ifstream file("../assets/day1.txt");
+    std::ifstream file("../Day1/Resources/day1.txt");
     std::vector<int> numbers;
     std::string line;
 
