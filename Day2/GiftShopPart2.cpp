@@ -58,6 +58,7 @@ int main()
         {
             // Convert back into a string. (Yes I realize I am probably wasting a load of time.)
             std::string const number_string = std::to_string(id);
+            std::string_view const sv(number_string);
 
             // Try all pattern lengths from 1 to half the string length.
             // We need at least 2 repetitions, so pattern can be at most size/2.
@@ -66,13 +67,13 @@ int main()
                 // Check if the string length is divisible by the pattern length.
                 if (number_string.size() % pattern_length == 0)
                 {
-                    std::string const &pattern = number_string.substr(0, pattern_length);
+                    std::string_view const pattern = sv.substr(0, pattern_length);
                     bool found_match = true;
 
                     // For every chunk, check to see if it matches the pattern.
                     for (int i = pattern_length; i < number_string.size(); i += pattern_length)
                     {
-                        std::string const &chunk = number_string.substr(i, pattern_length);
+                        std::string_view const chunk = sv.substr(i, pattern_length);
 
                         // This pattern is not a full match. Move on to the next.
                         if (pattern != chunk)
