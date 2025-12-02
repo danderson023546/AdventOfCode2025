@@ -13,7 +13,7 @@ struct ProductIdRange
 
 int main()
 {
-    std::ifstream file("../Day2/Resources/day2_part1.txt");
+    std::ifstream file("../Day2/Resources/day2.txt");
     std::vector<ProductIdRange> product_ranges;
     std::string line;
 
