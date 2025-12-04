@@ -32,96 +32,130 @@ int main()
     std::cout << "\nLoaded " << paper_roll_grid.size() << " lines.\n" << std::endl;
 
     int total_valid_rolls = 0;
+    int removed_rolls = 0;
     int const adjacent_offsets[3] = {-1, 0, 1};
+    bool found_valid_roll = true;
 
-    for (int line_index = 0; line_index < paper_roll_grid.size(); line_index++)
+    while (found_valid_roll)
     {
-        // Grab the current line, as well as the previous and next if available. If they are not available (e.g., edge cases), create empty lines of the same length.
-        std::string previous_line = "";
-        auto &current_line = paper_roll_grid[line_index];
-        std::string next_line = "";
+        for (int line_index = 0; line_index < paper_roll_grid.size(); line_index++)
+        {
+            // Grab the current line, as well as the previous and next if available. If they are not available (e.g., edge cases), create empty lines of the same length.
+            std::string previous_line = "";
+            auto &current_line = paper_roll_grid[line_index];
+            std::string next_line = "";
 
-        if (line_index > 0)
-        {
-            previous_line = paper_roll_grid[line_index - 1];
-        }
-        else
-        {
-            previous_line.resize(current_line.size(), '.');
-        }
-
-        if (line_index < paper_roll_grid.size() - 1)
-        {
-            next_line = paper_roll_grid[line_index + 1];
-        }
-        else
-        {
-            next_line.resize(current_line.size(), '.');
-        }
-
-        for (int char_index = 0; char_index < current_line.size(); char_index++)
-        {
-            // Track the number of adjacent rolls.
-            int adjacent_roll_count = 0;
-
-            if (current_line[char_index] == '@')
+            if (line_index > 0)
             {
-                // First, check on the current line.
-                for (int offset : adjacent_offsets)
+                previous_line = paper_roll_grid[line_index - 1];
+            }
+            else
+            {
+                previous_line.resize(current_line.size(), '.');
+            }
+
+            if (line_index < paper_roll_grid.size() - 1)
+            {
+                next_line = paper_roll_grid[line_index + 1];
+            }
+            else
+            {
+                next_line.resize(current_line.size(), '.');
+            }
+
+            for (int char_index = 0; char_index < current_line.size(); char_index++)
+            {
+                // Track the number of adjacent rolls.
+                int adjacent_roll_count = 0;
+
+                if (current_line[char_index] == '@')
                 {
-                    // If the offset is within the bounds on the line
-                    if (char_index + offset >= 0 && char_index + offset < current_line.size())
+                    // First, check on the current line.
+                    for (int offset : adjacent_offsets)
                     {
-                        if (current_line[char_index + offset] == '@')
+                        // If the offset is within the bounds on the line
+                        if (char_index + offset >= 0 && char_index + offset < current_line.size())
                         {
-                            if (offset != 0) // Exclude self
+                            if (current_line[char_index + offset] == '@' || current_line[char_index + offset] == 'X')
+                            {
+                                if (offset != 0) // Exclude self
+                                {
+                                    adjacent_roll_count++;
+                                }
+                            }
+                        }
+                    }
+
+                    // Now check the previous line.
+                    for (int offset : adjacent_offsets)
+                    {
+                        // If the offset is within the bounds on the line
+                        if (char_index + offset >= 0 && char_index + offset < previous_line.size())
+                        {
+                            if (previous_line[char_index + offset] == '@' || current_line[char_index + offset] == 'X')
                             {
                                 adjacent_roll_count++;
                             }
                         }
                     }
-                }
 
-                // Now check the previous line.
-                for (int offset : adjacent_offsets)
-                {
-                    // If the offset is within the bounds on the line
-                    if (char_index + offset >= 0 && char_index + offset < previous_line.size())
+                    // Now check the next line.
+                    for (int offset : adjacent_offsets)
                     {
-                        if (previous_line[char_index + offset] == '@')
+                        // If the offset is within the bounds on the line
+                        if (char_index + offset >= 0 && char_index + offset < next_line.size())
                         {
-                            adjacent_roll_count++;
+                            if (next_line[char_index + offset] == '@' || current_line[char_index + offset] == 'X')
+                            {
+                                adjacent_roll_count++;
+                            }
                         }
                     }
-                }
 
-                // Now check the next line.
-                for (int offset : adjacent_offsets)
-                {
-                    // If the offset is within the bounds on the line
-                    if (char_index + offset >= 0 && char_index + offset < next_line.size())
+                    if (adjacent_roll_count < 4U)
                     {
-                        if (next_line[char_index + offset] == '@')
-                        {
-                            adjacent_roll_count++;
-                        }
-                    }
-                }
+                        total_valid_rolls++;
 
-                if (adjacent_roll_count < 4U)
-                {
-                    total_valid_rolls++;
+                        // Mark this roll as valid to be removed at the end of the loop.
+                        current_line[char_index] = 'X';
+                    }
                 }
             }
         }
+
+        // If any rolls were valid, we have to remove them and try again!
+        if (total_valid_rolls > 0U)
+        {
+            removed_rolls += total_valid_rolls;
+            total_valid_rolls = 0;
+            found_valid_roll = true;
+
+            // We have counted all of the valid movable rolls, now removed any that we counted and do it again.
+            for (auto &line : paper_roll_grid)
+            {
+                for (auto &char_in_line : line)
+                {
+                    if (char_in_line == 'X')
+                    {
+                        char_in_line = '.';
+                    }
+                }
+            }
+        }
+        else
+        {
+            found_valid_roll = false;
+        }
     }
+
+
 
     for (auto const &line : paper_roll_grid)
     {
         std::cout << line << std::endl;
     }
 
-    std::cout << "Total valid rolls: " << total_valid_rolls << std::endl;
+    std::cout << "Total valid rolls: " << removed_rolls << std::endl;
 
     return 0;
 }
