@@ -13,3 +13,6 @@ add_executable(Day3_Part2 Day3/LobbyPart2.cpp)
 
 add_executable(Day4_Part1 Day4/PrintingDepartmentPart1.cpp)
 add_executable(Day4_Part2 Day4/PrintingDepartmentPart2.cpp)
+
+add_executable(Day5_Part1 Day5/CafeteriaPart1.cpp)
+add_executable(Day5_Part2 Day5/CafeteriaPart2.cpp)
