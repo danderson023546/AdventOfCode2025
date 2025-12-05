@@ -31,7 +31,7 @@ int main()
     }
 
     // Sort the ranges based on where they start.
-    std::sort(ranges.begin(), ranges.end());
+    std::ranges::sort(ranges);
 
     std::vector<std::pair<long long, long long>> merged;
     for (auto const &range : ranges)
